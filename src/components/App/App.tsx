@@ -8,17 +8,21 @@ const App = () => {
   return (
     <div className="wrapper">
       <P5Canvas vertexCount={parseInt(vertexCount)} />
-      <div>
-        <label htmlFor="vertexCount text-3xl font-bold underline">Vértices: {vertexCount}</label>
-        <input
-          id="vertexCount"
-          type="range"
-          min="3"
-          max="24"
-          value={vertexCount}
-          onChange={(e) => setVertexCount(e.target.value)}
-          className="slider"
-        />
+      <div className="controls">
+        <div className="controls-col">
+          <label htmlFor="vertex-count text-3xl font-bold underline">
+            Vértices: {vertexCount}
+          </label>
+          <input
+            id="vertex-count"
+            type="range"
+            min="3"
+            max="128"
+            value={vertexCount}
+            onChange={(e) => setVertexCount(e.target.value)}
+            className="range-slider"
+          />
+        </div>
       </div>
     </div>
   );
