@@ -1,3 +1,4 @@
 .p5Canvas {
     display: block;
+    transform: rotateZ(270deg);
 }

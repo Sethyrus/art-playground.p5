@@ -36,16 +36,9 @@ export class Utils
         {
           if (position + 1 + i > vertices.length / 2)
           {
-            console.log("Entra");
-            // result.push(vertices[position - vertices.length / 2]);
-
             result.push(vertices[position - vertices.length / 2 + i] ?? vertices[0 + (vertices.length - i)]);
             result.push(vertices[position - vertices.length / 2 - i] ?? vertices[(vertices.length - i) + position]);
-
-            console.log("Sale");
           }
-
-          // result.push(vertices[position - i] ?? vertices[(vertices.length - i) + position]);
         }
       }
     }

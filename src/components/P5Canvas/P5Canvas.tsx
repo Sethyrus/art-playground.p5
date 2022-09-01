@@ -6,10 +6,9 @@ import "./P5Canvas.css";
 
 interface CanvasProps {
   vertexCount: number;
+  vertexClosestVertices: number;
+  vertexOpposingVertices: number;
 }
-
-const vertexClosestVertices = 6;
-const vertexOpposingVertices = 2;
 
 let resizeTimeout: NodeJS.Timeout;
 let canvasSize =
@@ -35,19 +34,15 @@ const P5Canvas = (props: CanvasProps) => {
     const vertexPositions: Position[] = [];
 
     // Get the vertices at the edge of a circle in the middle of the canvas, half size of it, and draw them
-    for (let i = 0; i < props.vertexCount; i++) {
+    for (let i = 1; i <= props.vertexCount; i++) {
       const angle = (i / props.vertexCount) * Math.PI * 2;
 
-      console.log("angle", angle);
+      vertexPositions.push({
+        x: p5.width / 2 + (Math.cos(angle) * p5.width) / 4,
+        y: p5.height / 2 + (Math.sin(angle) * p5.width) / 4,
+      });
 
-      vertexPositions.push(
-        new Position(
-          p5.width / 2 + (Math.cos(angle) * p5.width) / 4,
-          p5.height / 2 + (Math.sin(angle) * p5.width) / 4
-        )
-      );
-
-      p5.ellipse(vertexPositions[i].x, vertexPositions[i].y, 10, 10);
+      p5.circle(vertexPositions[i - 1].x, vertexPositions[i - 1].y, 10);
     }
 
     // Draw a line from each vertex to the N closest ones
@@ -55,17 +50,17 @@ const P5Canvas = (props: CanvasProps) => {
       const closestVertices = Utils.getNClosestVertices(
         i,
         vertexPositions,
-        vertexClosestVertices > props.vertexCount
+        props.vertexClosestVertices > props.vertexCount
           ? props.vertexCount
-          : vertexClosestVertices
+          : props.vertexClosestVertices
       );
 
       const opposingVertices = Utils.getNOpposingVertices(
         i,
         vertexPositions,
-        vertexOpposingVertices > props.vertexCount
+        props.vertexOpposingVertices > props.vertexCount
           ? props.vertexCount
-          : vertexOpposingVertices
+          : props.vertexOpposingVertices
       );
 
       for (let j = 0; j < closestVertices.length; j++) {
