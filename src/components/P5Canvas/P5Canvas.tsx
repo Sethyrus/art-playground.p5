@@ -1,11 +1,15 @@
 import Sketch from "react-p5";
 import P5 from "react-p5/node_modules/@types/p5";
 import { Position } from "../../models/position";
+import { Utils } from "../../utils";
 import "./P5Canvas.css";
 
 interface CanvasProps {
   vertexCount: number;
 }
+
+const vertexClosestVertices = 6;
+const vertexOpposingVertices = 2;
 
 let resizeTimeout: NodeJS.Timeout;
 let canvasSize =
@@ -13,16 +17,16 @@ let canvasSize =
     ? window.innerHeight - 1
     : window.innerWidth;
 
+const resize = (p5: P5, canvasParentRef: Element) => {
+  canvasSize =
+    window.innerWidth > window.innerHeight
+      ? window.innerHeight
+      : window.innerWidth;
+
+  p5.createCanvas(canvasSize, canvasSize).parent(canvasParentRef);
+};
+
 const P5Canvas = (props: CanvasProps) => {
-  const resize = (p5: P5, canvasParentRef: Element) => {
-    canvasSize =
-      window.innerWidth > window.innerHeight
-        ? window.innerHeight
-        : window.innerWidth;
-
-    p5.createCanvas(canvasSize, canvasSize).parent(canvasParentRef);
-  };
-
   const draw = (p5: P5) => {
     p5.background("#dddddd");
 
@@ -30,9 +34,12 @@ const P5Canvas = (props: CanvasProps) => {
 
     const vertexPositions: Position[] = [];
 
-    // Draw the vertices at the edge of a circle in the middle of the canvas, half size of it
+    // Get the vertices at the edge of a circle in the middle of the canvas, half size of it, and draw them
     for (let i = 0; i < props.vertexCount; i++) {
       const angle = (i / props.vertexCount) * Math.PI * 2;
+
+      console.log("angle", angle);
+
       vertexPositions.push(
         new Position(
           p5.width / 2 + (Math.cos(angle) * p5.width) / 4,
@@ -41,6 +48,43 @@ const P5Canvas = (props: CanvasProps) => {
       );
 
       p5.ellipse(vertexPositions[i].x, vertexPositions[i].y, 10, 10);
+    }
+
+    // Draw a line from each vertex to the N closest ones
+    for (let i = 0; i < vertexPositions.length; i++) {
+      const closestVertices = Utils.getNClosestVertices(
+        i,
+        vertexPositions,
+        vertexClosestVertices > props.vertexCount
+          ? props.vertexCount
+          : vertexClosestVertices
+      );
+
+      const opposingVertices = Utils.getNOpposingVertices(
+        i,
+        vertexPositions,
+        vertexOpposingVertices > props.vertexCount
+          ? props.vertexCount
+          : vertexOpposingVertices
+      );
+
+      for (let j = 0; j < closestVertices.length; j++) {
+        p5.line(
+          vertexPositions[i]?.x,
+          vertexPositions[i]?.y,
+          closestVertices[j]?.x,
+          closestVertices[j]?.y
+        );
+      }
+
+      for (let j = 0; j < opposingVertices.length; j++) {
+        p5.line(
+          vertexPositions[i]?.x,
+          vertexPositions[i]?.y,
+          opposingVertices[j]?.x,
+          opposingVertices[j]?.y
+        );
+      }
     }
   };
 

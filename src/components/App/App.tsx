@@ -3,7 +3,7 @@ import P5Canvas from "../P5Canvas/P5Canvas";
 import "./App.css";
 
 const App = () => {
-  const [vertexCount, setVertexCount] = useState("5");
+  const [vertexCount, setVertexCount] = useState("12");
 
   return (
     <div className="wrapper">
@@ -16,7 +16,8 @@ const App = () => {
           <input
             id="vertex-count"
             type="range"
-            min="3"
+            min="0"
+            step="2"
             max="128"
             value={vertexCount}
             onChange={(e) => setVertexCount(e.target.value)}
