@@ -1,5 +1,6 @@
 import Sketch from "react-p5";
 import P5 from "react-p5/node_modules/@types/p5";
+import { Line } from "../../models/line";
 import { Position } from "../../models/position";
 import { Utils } from "../../utils";
 import "./P5Canvas.css";
@@ -63,22 +64,30 @@ const P5Canvas = (props: CanvasProps) => {
           : props.vertexOpposingVertices
       );
 
+      const lines: Line[] = [];
+
       for (let j = 0; j < closestVertices.length; j++) {
-        p5.line(
-          vertexPositions[i]?.x,
-          vertexPositions[i]?.y,
-          closestVertices[j]?.x,
-          closestVertices[j]?.y
-        );
+        lines.push({
+          start: { x: vertexPositions[i]?.x, y: vertexPositions[i]?.y },
+          end: {
+            x: closestVertices[j]?.x,
+            y: closestVertices[j]?.y,
+          },
+        });
       }
 
       for (let j = 0; j < opposingVertices.length; j++) {
-        p5.line(
-          vertexPositions[i]?.x,
-          vertexPositions[i]?.y,
-          opposingVertices[j]?.x,
-          opposingVertices[j]?.y
-        );
+        lines.push({
+          start: { x: vertexPositions[i]?.x, y: vertexPositions[i]?.y },
+          end: {
+            x: opposingVertices[j]?.x,
+            y: opposingVertices[j]?.y,
+          },
+        });
+      }
+
+      for (let line of Utils.sanitizeLines(lines)) {
+        p5.line(line.start.x, line.start.y, line.end.x, line.end.y);
       }
     }
   };
