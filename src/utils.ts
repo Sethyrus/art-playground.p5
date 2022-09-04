@@ -63,6 +63,7 @@ export class Utils
     return result;
   }
 
+  // TODO - not working correctly
   // Returns an array of non duplicated lines
   static sanitizeLines(lines: Line[]): Line[]
   {
@@ -70,7 +71,11 @@ export class Utils
 
     for (const line of lines)
     {
-      if (line && !result.some(l => l?.start?.x === line?.start?.x && l?.start?.y === line?.start?.y && l?.end?.x === line?.end?.x && l?.end?.y === line?.end?.y))
+      if (line && !result.some(l =>
+        (l?.start?.x === line?.start?.x && l?.start?.y === line?.start?.y && l?.end?.x === line?.end?.x && l?.end?.y === line?.end?.y)
+        ||
+        (l?.start?.x === line?.end?.x && l?.start?.y === line?.end?.y && l?.end?.x === line?.start?.x && l?.end?.y === line?.start?.y)
+      ))
       {
         result.push(line);
       }
